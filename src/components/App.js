@@ -2,6 +2,20 @@ import React, { Component } from 'react'
 import List from './List'
 import Header from './header/Header'
 import Tech from './header/Tech'
+import { Query } from 'react-apollo'; 
+import { gql } from 'apollo-boost'; 
+
+const GET_PEOPLE = gql`
+  { 
+    people {
+      name
+      height
+      homeworld {
+        name
+      }
+    }
+  }
+`
 
 export default class App extends Component {
   render() {
@@ -21,7 +35,16 @@ export default class App extends Component {
             image='https://www.qualium-systems.com/wp-content/uploads/2015/07/icon-reactjs.svg'
           />
         </Header>
-        {/* Display list of fetched data */}
+        <Query query={GET_PEOPLE}>
+          {({ loading, data, error }) => {
+            console.log('loading + data + error', loading, data, error)
+            if (loading) {
+              return <div>Loading...</div>
+            } else {
+              return <List list={data.people}/>
+            }
+          }}
+        </Query>
       </div>
     )
   }
